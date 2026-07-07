@@ -4,3 +4,9 @@ backend/.env
 .DS_Store
 
 backend/uploads/
+
+frontend/.env
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts

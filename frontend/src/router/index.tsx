@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { ProtectedRoute, PublicOnlyRoute } from '@/components/routing/RouteGuards';
 import { AuthLayout } from '@/layouts/AuthLayout';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { MainLayout } from '@/layouts/MainLayout';
@@ -23,40 +24,50 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <AuthLayout />,
+    element: <PublicOnlyRoute />,
     children: [
       {
-        path: '/login',
-        element: <LoginPage />,
-      },
-      {
-        path: '/register',
-        element: <RegisterPage />,
+        element: <AuthLayout />,
+        children: [
+          {
+            path: '/login',
+            element: <LoginPage />,
+          },
+          {
+            path: '/register',
+            element: <RegisterPage />,
+          },
+        ],
       },
     ],
   },
   {
-    element: <DashboardLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: '/dashboard',
-        element: <DashboardPage />,
-      },
-      {
-        path: '/products',
-        element: <ProductsPage />,
-      },
-      {
-        path: '/products/new',
-        element: <AddProductPage />,
-      },
-      {
-        path: '/products/:id',
-        element: <ProductDetailsPage />,
-      },
-      {
-        path: '/profile',
-        element: <ProfilePage />,
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: '/dashboard',
+            element: <DashboardPage />,
+          },
+          {
+            path: '/products',
+            element: <ProductsPage />,
+          },
+          {
+            path: '/products/new',
+            element: <AddProductPage />,
+          },
+          {
+            path: '/products/:id',
+            element: <ProductDetailsPage />,
+          },
+          {
+            path: '/profile',
+            element: <ProfilePage />,
+          },
+        ],
       },
     ],
   },

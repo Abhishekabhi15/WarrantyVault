@@ -1,4 +1,5 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -8,6 +9,14 @@ const navItems = [
 ];
 
 export function Navbar() {
+  const { isAuthenticated, logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate('/login', { replace: true });
+  }
+
   return (
     <header className="navbar">
       <Link className="flex items-center gap-3" to="/">
@@ -37,15 +46,28 @@ export function Navbar() {
       </nav>
 
       <div className="nav-actions">
-        <Link className="hidden text-sm font-medium text-surface-500 md:inline-flex" to="/products/new">
-          Add Product
-        </Link>
-        <Link className="button button-secondary" to="/login">
-          Login
-        </Link>
-        <Link className="button" to="/register">
-          Get Started
-        </Link>
+        {isAuthenticated ? (
+          <>
+            <Link className="hidden text-sm font-medium text-surface-500 md:inline-flex" to="/products/new">
+              Add Product
+            </Link>
+            <span className="hidden text-sm text-surface-500 md:inline-flex">
+              Signed in as {user?.name}
+            </span>
+            <button type="button" className="button button-secondary" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link className="button button-secondary" to="/login">
+              Login
+            </Link>
+            <Link className="button" to="/register">
+              Get Started
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );
