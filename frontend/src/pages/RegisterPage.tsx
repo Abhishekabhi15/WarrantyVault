@@ -38,8 +38,8 @@ export function RegisterPage() {
     setIsSubmitting(true);
     try {
       await register({
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
         password: formData.password,
       });
       navigate('/dashboard', { replace: true });

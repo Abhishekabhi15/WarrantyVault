@@ -19,7 +19,7 @@ export function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
       navigate(from || '/dashboard', { replace: true });
     } catch (submitError) {

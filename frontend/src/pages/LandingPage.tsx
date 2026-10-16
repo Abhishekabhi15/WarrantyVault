@@ -98,30 +98,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-primary-100 bg-primary-600 p-8 text-white shadow-card md:p-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-100">
-              Call To Action
-            </p>
-            <h2 className="mt-3 text-4xl font-semibold text-white">
-              Start with a clean warranty workspace and scale from there.
-            </h2>
-            <p className="mt-3 max-w-2xl text-primary-100">
-              Create your account, add your first products, and keep every warranty detail visible from one dashboard.
-            </p>
-          </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-primary-700 shadow-soft transition hover:-translate-y-0.5" to="/register">
-              Create Account
-            </Link>
-            <Link className="inline-flex items-center justify-center rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10" to="/login">
-              Sign In
-            </Link>
-          </div>
-        </div>
-      </section>
     </section>
   );
 }

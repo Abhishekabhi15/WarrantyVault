@@ -36,6 +36,16 @@ export function AddProductPage() {
       return;
     }
 
+    let purchasePrice: string | null = null;
+    if (formData.purchase_price && formData.purchase_price.trim() !== '') {
+      const parsedPrice = Number(formData.purchase_price);
+      if (isNaN(parsedPrice) || parsedPrice < 0) {
+        setError('Purchase price must be a valid positive number.');
+        return;
+      }
+      purchasePrice = parsedPrice.toFixed(2);
+    }
+
     setIsSubmitting(true);
     try {
       const createdProduct = await api.createProduct({
@@ -43,7 +53,7 @@ export function AddProductPage() {
         brand: formData.brand.trim() || null,
         category: formData.category || null,
         purchase_date: formData.purchase_date,
-        purchase_price: formData.purchase_price ? String(Number(formData.purchase_price)) : null,
+        purchase_price: purchasePrice,
         retailer: formData.retailer.trim() || null,
         serial_number: formData.serial_number.trim() || null,
         warranty_duration_months: warrantyDuration,
@@ -99,7 +109,7 @@ export function AddProductPage() {
               value={formData.category}
               onChange={(event) => setFormData((current) => ({ ...current, category: event.target.value }))}
             >
-              <option value="" disabled>
+              <option value="">
                 Select a category
               </option>
               {categories

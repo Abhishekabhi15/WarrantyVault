@@ -113,6 +113,27 @@ export function ProductDetailsPage() {
       return;
     }
 
+    if (!formData.name.trim() || !formData.purchase_date || !formData.warranty_duration_months) {
+      setError('Please complete the required fields before saving.');
+      return;
+    }
+
+    const warrantyDuration = Number(formData.warranty_duration_months);
+    if (!Number.isInteger(warrantyDuration) || warrantyDuration <= 0) {
+      setError('Warranty duration must be a whole number greater than zero.');
+      return;
+    }
+
+    let purchasePrice: string | null = null;
+    if (formData.purchase_price && formData.purchase_price.trim() !== '') {
+      const parsedPrice = Number(formData.purchase_price);
+      if (isNaN(parsedPrice) || parsedPrice < 0) {
+        setError('Purchase price must be a valid positive number.');
+        return;
+      }
+      purchasePrice = parsedPrice.toFixed(2);
+    }
+
     setIsSaving(true);
     setError(null);
     setPageMessage(null);
@@ -123,10 +144,10 @@ export function ProductDetailsPage() {
         brand: formData.brand.trim() || null,
         category: formData.category || null,
         purchase_date: formData.purchase_date,
-        purchase_price: formData.purchase_price ? String(Number(formData.purchase_price)) : null,
+        purchase_price: purchasePrice,
         retailer: formData.retailer.trim() || null,
         serial_number: formData.serial_number.trim() || null,
-        warranty_duration_months: Number(formData.warranty_duration_months),
+        warranty_duration_months: warrantyDuration,
         notes: formData.notes.trim() || null,
       });
       setProduct(updatedProduct);
@@ -168,6 +189,7 @@ export function ProductDetailsPage() {
       return;
     }
 
+    const formElement = event.currentTarget;
     setIsUploading(true);
     setError(null);
     setPageMessage(null);
@@ -178,6 +200,7 @@ export function ProductDetailsPage() {
         productId: product.id,
       });
       setDocuments((current) => [uploadedDocument, ...current]);
+      formElement.reset();
       setSelectedFile(null);
       setPageMessage('Document uploaded successfully.');
     } catch (uploadError) {
@@ -190,7 +213,10 @@ export function ProductDetailsPage() {
   async function handleDownload(documentItem: Document) {
     setError(null);
     try {
-      const { blob, filename } = await api.downloadDocument(documentItem.id);
+      const { blob, filename } = await api.downloadDocument(
+        documentItem.id,
+        documentItem.original_filename,
+      );
       const blobUrl = window.URL.createObjectURL(blob);
       const anchor = window.document.createElement('a');
       anchor.href = blobUrl;

@@ -118,7 +118,8 @@ type RequestOptions = {
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const TOKEN_KEY = 'warrantyvault_access_token';
 
-let authToken: string | null = null;
+let authToken: string | null =
+  typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null;
 let unauthorizedHandler: (() => void) | null = null;
 
 function buildHeaders(body?: BodyInit | null, headers?: HeadersInit): Headers {
@@ -126,8 +127,10 @@ function buildHeaders(body?: BodyInit | null, headers?: HeadersInit): Headers {
   if (body && !(body instanceof FormData) && !finalHeaders.has('Content-Type')) {
     finalHeaders.set('Content-Type', 'application/json');
   }
-  if (authToken) {
-    finalHeaders.set('Authorization', `Bearer ${authToken}`);
+  const token =
+    authToken ?? (typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null);
+  if (token) {
+    finalHeaders.set('Authorization', `Bearer ${token}`);
   }
   return finalHeaders;
 }
@@ -287,7 +290,10 @@ export const api = {
     }),
   getExpiringWarranties: (days = 30) =>
     request<Product[]>(`/warranties/expiring?days=${days}`),
-  async downloadDocument(documentId: number | string): Promise<{ blob: Blob; filename: string }> {
+  async downloadDocument(
+    documentId: number | string,
+    fallbackFilename?: string,
+  ): Promise<{ blob: Blob; filename: string }> {
     const response = await fetch(`${API_URL}/documents/${documentId}/download`, {
       headers: buildHeaders(null, undefined),
     });
@@ -303,6 +309,7 @@ export const api = {
     const blob = await response.blob();
     const filename =
       getFilenameFromDisposition(response.headers.get('content-disposition')) ??
+      fallbackFilename ??
       `document-${documentId}`;
     return { blob, filename };
   },

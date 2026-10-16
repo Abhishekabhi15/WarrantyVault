@@ -15,7 +15,22 @@ class Settings(BaseSettings):
     database_url: str = Field(
         default="postgresql+psycopg://postgres:postgres@localhost:5432/warrantyvault"
     )
-    allowed_origins: list[str] = Field(default=["http://localhost:5173"])
+    allowed_origins: list[str] = Field(
+        default=[
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:5174",
+            "http://127.0.0.1:5174",
+            "http://localhost:5175",
+            "http://127.0.0.1:5175",
+            "http://localhost:5176",
+            "http://127.0.0.1:5176",
+            "http://localhost:5177",
+            "http://127.0.0.1:5177",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ]
+    )
     jwt_secret_key: str = "replace-with-a-long-random-secret"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60

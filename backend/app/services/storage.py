@@ -19,7 +19,11 @@ ALLOWED_CONTENT_TYPES = {
 
 
 def get_upload_root() -> Path:
-    return Path(settings.upload_dir)
+    upload_path = Path(settings.upload_dir)
+    if upload_path.is_absolute():
+        return upload_path
+    base_dir = Path(__file__).resolve().parent.parent.parent
+    return base_dir / upload_path
 
 
 def validate_upload(file: UploadFile, file_size: int) -> str:

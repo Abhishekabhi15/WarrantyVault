@@ -146,12 +146,15 @@ def download_document(
 ) -> FileResponse:
     document = get_owned_document_or_404(db, current_user.id, document_id)
     file_path = Path(document.file_path)
-
     if not file_path.exists():
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Document file not found.",
-        )
+        fallback_path = get_upload_root() / document.stored_filename
+        if fallback_path.exists():
+            file_path = fallback_path
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Document file not found.",
+            )
 
     return FileResponse(
         path=file_path,
@@ -168,6 +171,10 @@ def delete_document(
 ) -> Response:
     document = get_owned_document_or_404(db, current_user.id, document_id)
     file_path = Path(document.file_path)
+    if not file_path.exists():
+        fallback_path = get_upload_root() / document.stored_filename
+        if fallback_path.exists():
+            file_path = fallback_path
 
     db.delete(document)
     db.commit()
